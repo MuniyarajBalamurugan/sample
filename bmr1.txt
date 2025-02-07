@@ -1,1 +1,5 @@
-created text 1 
+class Main{
+  public sttsic void main(String a[]){
+  System.out.println("hiii");
+  }
+}
