@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+</head>
+<body>
+    <section id="home">
+    <div class="navbar">
+        <div class="logo"><span style="color:red">R</span>aj.</div>
+        <div class="menu" id="menubar">
+                <a href="#home" class="menus"><i class="bi bi-house"></i>Home</a>
+                <a href="#about" class="menus"><i class="bi bi-person"></i>About</a>
+               <a href="#contact" class="menus"><i class="bi bi-telephone"></i>Contact</a>
+            
+        </div>
+        <div class="hamburger" id="ham">
+            <span class="burger"></span>
+            <span class="burger"></span>
+            <span class="burger"></span>
+        </div>
+       </div> 
+        <div class="index">
+            <div class="text">
+                <div class="weltext">
+                    <h1>Hi,I'm </h1>
+                    <h1 id='welcome'>MUNIYARAJ </h1>
+                </div>
+                <h2>Learner</h2>
+            </div>
+            <div class="image">
+                <div class="imageforindex"></div>
+            </div>
+        </div>
+    </section>
+    <section id="about">
+        <div class="aboutimage">
+            <div class="imageforabout">
+
+            </div>
+        </div>
+        <div class="content">
+            <div class="abouttext">
+                <h1>About Me</h1>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia, ipsum sunt ut nemo nam ea suscipit consequuntur repudiandae magnam inventore excepturi veniam numquam illum molestiae, tempore placeat. Illum libero non sunt qui ad rem sequi placeat temporibus reprehenderit, molestias quo molestiae praesentium! Odit autem ullam placeat optio non obcaecati aperiam nihil cum, pariatur deserunt? Minima tempore, temporibus voluptas alias odio modi magni aliquid nesciunt dolor nemo non explicabo voluptates libero distinctio, nisi ab. Itaque veritatis architecto amet! Autem dolore eaque ea distinctio, consequuntur vero perspiciatis tempore expedita inventore facilis optio vel neque exercitationem quas voluptatem unde consectetur nesciunt repellendus cum.</p>
+               
+            </div>
+             <div class="skilllink">
+                    <p id="skil">Skill</p>
+                    <p id="edu">Education</p>
+                </div>
+            <div class="skill">
+                <div class="showskill">
+                    <ul>
+                        <li>c</li>
+                        <li>HTML 5</li>
+                        <li>CSS 3</li>
+                        <li> Data Structure</li>
+                    </ul>
+                </div>
+                <div class="showedu">
+                    <p>2023-26</p>
+                    <h3>B.sc CS</h3>
+                    <h4>Ayya Nadar Janaki Ammal College</h3>
+                        <br>
+                    <p>2023-24</p>
+                    <h3>Diploma in computer hardware</h3>
+                    <h4>Ayya Nadar Janaki Ammal College</h4>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <section id="contact">
+        <div class="contactdiv">
+        <div class="contact1">
+            <h1>Contact me</h1>
+            <div class="mail"><a href="mailto:muniyarajbalamurugan@gmail.com"><i class="bi bi-envelope"></i></a> <p>muniyarajbalamurugan@gmail.com</p></div>
+            <div class="mail"><a href="tel:+918220306158"><i class="bi bi-telephone"></i></a><p>8220306158</p></div>
+            <div class="social">
+            <a href="https://in.linkedin.com/in/muniyaraj-b-175148281" target="_blank"><i class="bi bi-linkedin"></i></a>
+            <a href="https://www.instagram.com/muniyaraj_balamurugan?igsh=OXNib2VtN3U3cm9l" target="none"> <i class="bi bi-instagram"></i></a>
+           
+            <i class="bi bi-facebook"></i>
+        <i class="bi bi-twitter"></i></div>
+        </div>
+        <div class="contact2">
+            <form action="">
+                <input type="text" placeholder="Your name" id="name" required>
+                <input type="text" placeholder="your mail" id="mail" required>
+                <textarea name="" id="message" placeholder="your message" required></textarea>
+                <p id="eror" style="color: red;"></p>
+                <input type="submit" id="submit" value="submit">
+            </form>
+        </div>
+        </div>
+        <div class="footer">
+            <h4><i class="bi bi-c-circle" style="font-size: 1.5rem;color:white;padding-inline: 4px;"></i>Copyright 2024. All rights reserved</h4>
+        </div>
+    </section>
+    
+        <script>
+            document.getElementById("ham").addEventListener("click",function()
+        {
+            
+            let ham=document.getElementById("menubar");
+            if(ham.style.display=="flex") ham.style.display="none";
+            else ham.style.display="flex";
+        });
+        document.getElementById("skil").addEventListener("click",function()
+        {
+            document.getElementById("edu").style.textDecoration="none";
+            this.style.textDecoration="underline";
+            document.getElementsByClassName("showskill")[0].style.display="flex";
+            document.getElementsByClassName("showedu")[0].style.display="none";
+    
+        });
+        document.getElementById("edu").addEventListener("click",function()
+    {
+        document.getElementById("skil").style.textDecoration="none";
+        this.style.textDecoration="underline";
+        document.getElementsByClassName("showskill")[0].style.display="none";
+        document.getElementsByClassName("showedu")[0].style.display="flex";
+    })
+        </script>
+        <script>
+        
+
+document.getElementById('submit').addEventListener("click",function(event)
+
+{
+    event.preventDefault();
+    if(check())
+    {
+    let array=getvalue()
+    console.log(array)
+   fetch("http://mathstut.free.nf/portfolio/backend.php",
+
+        {
+            mode:'no-cors',
+            method:'POST',
+            header:{'content-type':'application/json'},
+            body:JSON.stringify(array)
+        }
+    )
+    .then(res=>
+        {
+            alert('Message sented')
+            return res.json();
+        })
+        .then(msg=>
+        {
+            console.log(msg)
+        }
+        )
+    .catch(error=>
+    {
+        console.log(error)
+    })
+    .finally
+    {
+        refresh()
+    }
+    }
+})
+function getvalue()
+{
+    let name=document.getElementById("name").value 
+    let mail=document.getElementById("mail").value
+    let Message=document.getElementById("message").value
+    let obj={name,mail,Message}
+    return obj;
+}
+function refresh()
+{
+    document.getElementById('name').value=''
+    document.getElementById('mail').value=''
+    document.getElementById('message').value=''
+    document.getElementById('eror').innerHTML=''
+    
+}
+        function check()
+        {
+            let name=document.getElementById("name").value 
+            let mail=document.getElementById("mail").value
+            let Message=document.getElementById("message").value
+            if(name=='' || mail=='' || Message=='')
+            {
+            document.getElementById('eror').innerHTML='All inputs are required'
+            return false
+            }
+            else return true
+        }
+        
+        </script>
+
+        
+</body>
+</html>
