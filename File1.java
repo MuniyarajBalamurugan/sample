@@ -95,6 +95,11 @@ class File1{
                 System.out.println("File is deleted");
             else
                 System.out.println("The file is not");
+                System.out.println("The file is not");
+                System.out.println("The file is not");
+
+                System.out.println("The file is not");
+            
         }
         
     }
