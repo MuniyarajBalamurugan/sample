@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+//MONGO_URL = mongodb+srv://neesmu:neesmu2005@cluster0.cnxqlf2.mongodb.net/?appName=Cluster0
 
 //mongoose.connect("mongodb+srv://neesmu:neesmu2005@cluster0.cnxqlf2.mongodb.net/?appName=Cluster0")
 mongoose.connect(process.env.MONGO_URL)
@@ -11,10 +12,13 @@ const User = require("./models/user");
 
 const app = express();
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // CREATE (Add User)
 app.post("/users", async (req, res) => {
     try {
+        console.log("Received Webhook:", req.body);
+
         const user = await User.create(req.body);
         res.status(201).json(user);
     } catch (err) {
