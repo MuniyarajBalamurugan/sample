@@ -15,6 +15,7 @@ app.use(express.json());
 // CREATE (Add User)
 app.post("/users", async (req, res) => {
     try {
+         console.log("Received Webhook:", req.body);
         const user = await User.create(req.body);
         res.status(201).json(user);
     } catch (err) {
