@@ -26,26 +26,12 @@ db.connect((err) => {
 // Add Product API
 app.post("/add-product", upload.single("image"), (req, res) => {
     const { name, price, stock } = req.body;
-
-    if (!req.file) {
-        return res.status(400).json({ error: "Image is required" });
-    }
-
     const image_url = req.file.path; // Cloudinary URL
 
-    const query = `
-        INSERT INTO products (name, price, stock, image_url)
-        VALUES (?, ?, ?, ?)
-    `;
-
+    const query = `INSERT INTO products (name, price, stock, image_url) VALUES (?, ?, ?, ?)`;
     db.query(query, [name, price, stock, image_url], (err, result) => {
         if (err) return res.status(500).json({ error: err });
-
-        res.json({
-            message: "Product added successfully!",
-            product_id: result.insertId,
-            image_url
-        });
+        res.json({ message: "Product added!", product_id: result.insertId, image_url });
     });
 });
 
