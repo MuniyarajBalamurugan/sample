@@ -1,63 +1,103 @@
 const express = require("express");
-const mongoose = require("mongoose");
-//MONGO_URL = mongodb+srv://neesmu:neesmu2005@cluster0.cnxqlf2.mongodb.net/?appName=Cluster0
-
-//mongoose.connect("mongodb+srv://neesmu:neesmu2005@cluster0.cnxqlf2.mongodb.net/?appName=Cluster0")
-mongoose.connect(process.env.MONGO_URL)
-.then(() => console.log("MongoDB connected"))
-.catch(err => console.log(err));
-
-
-const User = require("./models/user");
+const mysql = require("mysql2");
+const upload = require("./upload");   // multer + cloudinary
 
 const app = express();
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-// CREATE (Add User)
-app.post("/users", async (req, res) => {
-    try {
-        console.log("Received Webhook:", req.body);
+// DB connection
+const db = mysql.createConnection({
+    host: "gondola.proxy.rlwy.net",
+    user: "root",
+    password: "jlDYMucnfwLHXuvtJnkXfeNHZsKVcIIV",
+    database: "railway",
+    port: 32669
+});
 
-        const user = await User.create(req.body);
-        res.status(201).json(user);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
+// connect the DB
+db.connect((err) => {
+    if (err) {
+        console.log("DB CONNECTION FAILED:", err);
+    } else {
+        console.log("MySQL Connected Successfully!");
     }
 });
 
-// READ ALL USERS
-app.get("/users", async (req, res) => {
-    const users = await User.find();
-    res.json(users);
+// Add Product API
+app.post("/add-product", upload.single("image"), (req, res) => {
+    const { name, price, stock } = req.body;
+
+    if (!req.file) {
+        return res.status(400).json({ error: "Image is required" });
+    }
+
+    const image_url = req.file.path; // Cloudinary URL
+
+    const query = `
+        INSERT INTO products (name, price, stock, image_url)
+        VALUES (?, ?, ?, ?)
+    `;
+
+    db.query(query, [name, price, stock, image_url], (err, result) => {
+        if (err) return res.status(500).json({ error: err });
+
+        res.json({
+            message: "Product added successfully!",
+            product_id: result.insertId,
+            image_url
+        });
+    });
 });
 
-// READ ONE USER
-app.get("/users/:id", async (req, res) => {
-    const user = await User.findById(req.params.id);
-    res.json(user);
+// CREATE TABLES ROUTE
+app.get("/create-tables", (req, res) => {
+    const queries = [
+        `CREATE TABLE IF NOT EXISTS users (
+            user_id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(100),
+            phone VARCHAR(20),
+            address TEXT
+        )`,
+
+        `CREATE TABLE IF NOT EXISTS products (
+            product_id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(100),
+            price DECIMAL(10,2),
+            stock INT,
+            image_url VARCHAR(255)
+        )`,
+
+        `CREATE TABLE IF NOT EXISTS orders (
+            order_id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT,
+            total_amount DECIMAL(10,2),
+            order_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+            payment_status ENUM('Pending', 'Paid') DEFAULT 'Pending',
+            order_status ENUM('Placed', 'Delivered') DEFAULT 'Placed',
+            FOREIGN KEY (user_id) REFERENCES users(user_id)
+        )`,
+
+        `CREATE TABLE IF NOT EXISTS order_items (
+            order_item_id INT AUTO_INCREMENT PRIMARY KEY,
+            order_id INT,
+            product_id INT,
+            quantity INT,
+            price DECIMAL(10,2),
+            FOREIGN KEY (order_id) REFERENCES orders(order_id),
+            FOREIGN KEY (product_id) REFERENCES products(product_id)
+        )`
+    ];
+
+    queries.forEach(query => {
+        db.query(query, (err) => {
+            if (err) console.log("Error:", err);
+        });
+    });
+
+    res.send("All COD tables created successfully!");
 });
 
-// UPDATE USER
-app.put("/users/:id", async (req, res) => {
-    const updated = await User.findByIdAndUpdate(
-        req.params.id,
-        req.body,
-        { new: true } // return updated user
-    );
-    res.json(updated);
+// SERVER START
+app.listen(3000, () => {
+    console.log("Server running on PORT 3000");
 });
-
-// DELETE USER
-app.delete("/users/:id", async (req, res) => {
-    const deleted = await User.findByIdAndDelete(req.params.id);
-    res.json({ message: "User deleted", deleted });
-});
-
-// SERVER
-//app.listen(3000, () => console.log("Server running on port 3000"));
-
-app.listen(process.env.PORT || 3000, () => {
-  console.log("Server running");
-});
-
